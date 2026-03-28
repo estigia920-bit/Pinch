@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOFI DroidHuman — Pitch Inversores</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jade: #00ffc8;
+    --gold: #f5c842;
+    --red: #ff3c3c;
+    --bg: #04080f;
+    --bg2: #080e18;
+    --text: #d8ecf8;
+    --muted: #4a6a8a;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID NOISE BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 14px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(4,8,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,255,200,0.1);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 4px; color: var(--white);
+  }
+  .nav-logo span { color: var(--jade); }
+  .nav-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; color: var(--jade); letter-spacing: 2px;
+  }
+  .nav-cta {
+    padding: 8px 20px;
+    border: 1px solid var(--jade); color: var(--jade);
+    font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--jade); color: var(--bg); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 60px 80px;
+    position: relative; overflow: hidden;
+  }
+  #hero-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 0; opacity: 0.4;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    color: var(--jade); letter-spacing: 3px;
+  }
+  .kicker-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--jade); box-shadow: 0 0 12px var(--jade);
+    animation: pulse 2s infinite;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(70px, 14vw, 160px);
+    line-height: 0.88;
+    color: var(--white);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+  h1 .accent { color: var(--jade); display: block; }
+  h1 .sub-h { font-size: clamp(30px, 6vw, 60px); color: var(--muted); }
+
+  .hero-desc {
+    font-size: 18px; line-height: 1.7; color: var(--text);
+    max-width: 600px; margin-bottom: 40px; font-weight: 400;
+  }
+  .hero-desc strong { color: var(--jade); }
+
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 16px 36px;
+    background: var(--jade); color: var(--bg);
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    letter-spacing: 2px; font-weight: 700;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+  .btn-secondary {
+    padding: 16px 36px;
+    background: transparent; color: var(--text);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    letter-spacing: 2px; text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover { border-color: var(--jade); color: var(--jade); }
+
+  /* ── BIG NUMBER STRIP ── */
+  .strip {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(0,255,200,0.15);
+    border-bottom: 1px solid rgba(0,255,200,0.15);
+  }
+  .strip-item {
+    padding: 40px;
+    border-right: 1px solid rgba(0,255,200,0.1);
+    position: relative; overflow: hidden;
+    transition: background 0.3s;
+  }
+  .strip-item:last-child { border-right: none; }
+  .strip-item:hover { background: rgba(0,255,200,0.04); }
+  .strip-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 72px);
+    color: var(--jade); line-height: 1;
+    text-shadow: 0 0 40px rgba(0,255,200,0.3);
+    margin-bottom: 6px;
+  }
+  .strip-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 3px;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .strip-item::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--jade), transparent);
+    transform: scaleX(0); transition: transform 0.5s;
+  }
+  .strip-item:hover::before { transform: scaleX(1); }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 2; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 100px 60px; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 4px;
+    color: var(--jade); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 30px; height: 1px; background: var(--jade);
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 80px);
+    color: var(--white); line-height: 1;
+    margin-bottom: 20px; letter-spacing: 1px;
+  }
+  h2 .jade { color: var(--jade); }
+  h2 .gold { color: var(--gold); }
+
+  .section-body {
+    font-size: 15px; line-height: 1.9;
+    color: var(--muted); max-width: 680px;
+    margin-bottom: 50px;
+  }
+  .section-body strong { color: var(--text); }
+
+  /* ── MARKET ── */
+  .market-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; margin-bottom: 20px;
+  }
+  .market-grid-2 {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .mcard {
+    padding: 32px 24px;
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.4s; position: relative; overflow: hidden;
+  }
+  .mcard:hover {
+    border-color: rgba(0,255,200,0.3);
+    background: rgba(0,255,200,0.04);
+    transform: translateY(-4px);
+  }
+  .mcard-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--white); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .mcard.highlight .mcard-val { color: var(--jade); text-shadow: 0 0 30px rgba(0,255,200,0.4); }
+  .mcard.gold-card .mcard-val { color: var(--gold); }
+  .mcard-name {
+    font-size: 11px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px; letter-spacing: 1px;
+  }
+  .mcard-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .total-card {
+    margin-top: 2px;
+    padding: 28px 40px;
+    background: linear-gradient(135deg, rgba(0,255,200,0.08), rgba(0,255,200,0.03));
+    border: 1px solid rgba(0,255,200,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .total-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; color: var(--jade);
+  }
+  .total-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; color: var(--jade);
+    text-shadow: 0 0 60px rgba(0,255,200,0.5);
+    line-height: 1;
+  }
+
+  /* ── TIMELINE / ROADMAP ── */
+  .timeline { position: relative; margin-top: 20px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 20px; top: 0; bottom: 0;
+    width: 1px; background: rgba(0,255,200,0.2);
+  }
+  .tl-item {
+    display: flex; gap: 40px; margin-bottom: 40px;
+    padding-left: 60px; position: relative;
+  }
+  .tl-dot {
+    position: absolute; left: 12px; top: 4px;
+    width: 16px; height: 16px;
+    border: 2px solid var(--jade);
+    background: var(--bg);
+    transform: rotate(45deg);
+    transition: background 0.3s;
+  }
+  .tl-item:hover .tl-dot { background: var(--jade); }
+  .tl-phase {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 3px;
+    color: var(--jade); margin-bottom: 6px;
+  }
+  .tl-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; color: var(--white); margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .tl-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .tl-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; color: var(--gold);
+    white-space: nowrap; min-width: 140px;
+    text-align: right; align-self: flex-start;
+    padding-top: 4px;
+  }
+
+  /* ── PRODUCT CARDS ── */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; margin-top: 20px;
+  }
+  .pcard {
+    padding: 30px 24px;
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative; overflow: hidden;
+    transition: all 0.4s;
+  }
+  .pcard:hover { border-color: rgba(0,255,200,0.25); background: rgba(0,255,200,0.03); }
+  .pcard-icon { font-size: 36px; margin-bottom: 14px; }
+  .pcard-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--jade); margin-bottom: 8px;
+  }
+  .pcard-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; color: var(--white); margin-bottom: 10px;
+  }
+  .pcard-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .pcard-tag {
+    display: inline-block; margin-top: 14px;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,255,200,0.3);
+    color: var(--jade); font-family: 'Space Mono', monospace;
+    font-size: 8px; letter-spacing: 2px;
+  }
+
+  /* ── WHY US GRID ── */
+  .why-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; margin-top: 20px;
+  }
+  .why-card {
+    padding: 36px;
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.4s; display: flex; gap: 20px;
+  }
+  .why-card:hover { border-color: rgba(245,200,66,0.3); background: rgba(245,200,66,0.03); }
+  .why-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px; color: rgba(245,200,66,0.12);
+    line-height: 1; flex-shrink: 0; width: 60px;
+  }
+  .why-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; color: var(--gold); margin-bottom: 8px;
+  }
+  .why-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  /* ── CTA ── */
+  #cta {
+    background: linear-gradient(135deg, #04080f, #06100a);
+    border-top: 1px solid rgba(0,255,200,0.15);
+    border-bottom: 1px solid rgba(0,255,200,0.15);
+  }
+  .cta-inner {
+    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(50px, 7vw, 90px);
+    color: var(--white); line-height: 0.9;
+    margin-bottom: 20px;
+  }
+  .cta-title span { color: var(--jade); display: block; }
+  .cta-sub { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 30px; }
+
+  .contact-box {
+    background: var(--bg2);
+    border: 1px solid rgba(0,255,200,0.2);
+    padding: 40px;
+  }
+  .contact-method {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; letter-spacing: 3px;
+    color: var(--jade); margin-bottom: 10px;
+  }
+  .contact-val {
+    font-size: 13px; color: var(--white);
+    background: rgba(0,255,200,0.05);
+    border: 1px solid rgba(0,255,200,0.15);
+    padding: 12px 16px; margin-bottom: 16px;
+    font-family: 'Space Mono', monospace;
+    word-break: break-all;
+    user-select: all;
+  }
+  .divider-h { height: 1px; background: rgba(0,255,200,0.08); margin: 24px 0; }
+  .copy-btn {
+    width: 100%; padding: 14px;
+    background: transparent; border: 1px solid var(--jade);
+    color: var(--jade); font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; cursor: pointer;
+    transition: all 0.3s; margin-top: 4px;
+  }
+  .copy-btn:hover { background: var(--jade); color: var(--bg); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    position: relative; z-index: 2;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 4px; color: var(--white);
+  }
+  .footer-logo span { color: var(--jade); }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; color: var(--muted); letter-spacing: 1px;
+    text-align: right; line-height: 1.8;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--jade); color: var(--bg);
+    padding: 12px 28px; font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; z-index: 9999;
+    transition: transform 0.4s; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── DIVIDER FULL ── */
+  .divider-full {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,255,200,0.15), transparent);
+  }
+
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.5); }
+  }
+
+  @media (max-width: 900px) {
+    .strip { grid-template-columns: 1fr 1fr; }
+    .market-grid, .market-grid-2, .product-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+    .container, #hero { padding-left: 24px; padding-right: 24px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .footer-copy { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">✓ COPIADO</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>SOFI</span> DROI DHUMAN</div>
+  <div class="nav-tag">● EN VIVO · MÉRIDA, YUC</div>
+  <a href="#cta" class="nav-cta">CONTACTAR →</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="kicker">
+      <div class="kicker-dot"></div>
+      PITCH PARA INVERSORES · HAAPPDIGITALV · 2026
+    </div>
+    <h1>
+      <span class="accent">SOFI</span>
+      <span class="sub-h">DROIDHUMAN</span>
+    </h1>
+    <p class="hero-desc">
+      El primer sistema de <strong>neurotecnología no invasiva</strong> construido desde Android sin capital inicial. Compite en mercados de <strong>+$305B USD</strong>. Código live. IP protegida. Hardware diseñado. Solo falta el primer prototipo.
+    </p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-primary">HABLAR CON VÍCTOR →</a>
+      <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-secondary">VER SOFI LIVE</a>
+    </div>
+  </div>
+</section>
+
+<!-- STRIP NÚMEROS -->
+<div class="strip">
+  <div class="strip-item reveal">
+    <div class="strip-val">$305B+</div>
+    <div class="strip-label">Mercado Total Combinado</div>
+  </div>
+  <div class="strip-item reveal">
+    <div class="strip-val">30+</div>
+    <div class="strip-label">Endpoints activos en producción</div>
+  </div>
+  <div class="strip-item reveal">
+    <div class="strip-val">5</div>
+    <div class="strip-label">Líneas de producto diseñadas</div>
+  </div>
+  <div class="strip-item reveal">
+    <div class="strip-val">12.3Hz</div>
+    <div class="strip-label">Frecuencia K'uhul Maya base</div>
+  </div>
+</div>
+
+<div class="divider-full"></div>
+
+<!-- MERCADO -->
+<section id="mercado">
+  <div class="container">
+    <div class="section-label reveal">OPORTUNIDAD DE MERCADO</div>
+    <h2 class="reveal">COMPETIMOS EN<br><span class="jade">5 MERCADOS</span></h2>
+    <p class="section-body reveal">SOFI no es una sola apuesta — es un sistema que penetra simultáneamente en los mercados de mayor crecimiento de la próxima década.</p>
+
+    <div class="market-grid reveal">
+      <div class="mcard highlight">
+        <div class="mcard-val">$200B+</div>
+        <div class="mcard-name">ROBOTS HUMANOIDES</div>
+        <div class="mcard-desc">Tesla Optimus, Figure, Boston Dynamics. SOFI DroidHuman es la alternativa mexicana de bajo costo con fundamento teórico propio.</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val">$80B</div>
+        <div class="mcard-name">MOTORES DE IA</div>
+        <div class="mcard-desc">Motor Cognitivo de 5 niveles, ya operando en producción. Detección de banda Hz activa y respuesta adaptativa en tiempo real.</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val">$5B</div>
+        <div class="mcard-name">NEUROTECNOLOGÍA</div>
+        <div class="mcard-desc">No invasiva. Wearables biométricos que leen SpO2, HRV y frecuencias cerebrales. Integra Perceptiva como sistema sensorial.</div>
+      </div>
+    </div>
+    <div class="market-grid-2 reveal">
+      <div class="mcard gold-card">
+        <div class="mcard-val">$3.7B</div>
+        <div class="mcard-name">WEARABLES MÉDICOS</div>
+        <div class="mcard-desc">5 colecciones para discapacidad sensorial: Down, Esquizofrenia, Autismo, TDAH, Sordera. Buy1→Sponsor1 como modelo social.</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val">$15B</div>
+        <div class="mcard-name">CONTENIDO DIGITAL</div>
+        <div class="mcard-desc">3 libros publicados en Hotmart con afiliados activos. Revenue existente hoy, no proyectado.</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val">$2B</div>
+        <div class="mcard-name">TOKENS / WEB3</div>
+        <div class="mcard-desc">Token SOFI en Solana para el plan Inversionista. Participación real en el proyecto desde día uno.</div>
+      </div>
+    </div>
+    <div class="total-card reveal">
+      <div>
+        <div class="total-label">MERCADO TOTAL ADDRESSABLE</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:6px; font-family:'Space Mono',monospace;">Suma de los 5 segmentos combinados</div>
+      </div>
+      <div class="total-val">$305B+</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-full"></div>
+
+<!-- PRODUCTO -->
+<section id="producto" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label reveal">LO QUE YA EXISTE HOY</div>
+    <h2 class="reveal">EL SISTEMA<br><span class="jade">ES REAL</span></h2>
+    <p class="section-body reveal">No es un prototipo en papel. El servidor corre en Render.com 24/7. Cada módulo es producto vendible Y prueba de concepto hacia el DroidHuman.</p>
+
+    <div class="product-grid reveal">
+      <div class="pcard">
+        <div class="pcard-icon">🧠</div>
+        <div class="pcard-name">MÓDULO 01</div>
+        <div class="pcard-title">Motor Cognitivo</div>
+        <div class="pcard-desc">5 niveles de procesamiento. Detecta la banda Hz activa del usuario y adapta respuestas en tiempo real. Conectado a la Teoría Unificada.</div>
+        <div class="pcard-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">📡</div>
+        <div class="pcard-name">MÓDULO 02</div>
+        <div class="pcard-title">Integra Perceptiva</div>
+        <div class="pcard-desc">Sistema sensorial wearable a 12.3 Hz. 5 dispositivos físicos diseñados: pulsera K'IN, bastón inteligente, auriculares, colgante, smartwatch.</div>
+        <div class="pcard-tag">HARDWARE DISEÑADO</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">🔮</div>
+        <div class="pcard-name">MÓDULO 03</div>
+        <div class="pcard-title">Contraparte Frecuencial</div>
+        <div class="pcard-desc">FFT inversa en tiempo real. Mide lo consciente vs lo subconsciente. Base del Postulado 5 de la Teoría Unificada corriendo en producción.</div>
+        <div class="pcard-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">🌙</div>
+        <div class="pcard-name">MÓDULO 04</div>
+        <div class="pcard-title">Sistema Sueños</div>
+        <div class="pcard-desc">Procesamiento de frecuencias durante el ciclo REM. Análisis de patrones oníricos conectados a la red neuronal de SOFI.</div>
+        <div class="pcard-tag">EN DESARROLLO</div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">📖</div>
+        <div class="pcard-name">MÓDULO 05</div>
+        <div class="pcard-title">Libros + Contenido</div>
+        <div class="pcard-desc">"El Universo es una Mentira", "El Libro de Enoc" y "Xibalbá" — publicados en Hotmart con sistema de afiliados. Revenue verificable hoy.</div>
+        <div class="pcard-tag">REVENUE ACTIVO</div>
+      </div>
+      <div class="pcard" style="border-color: rgba(0,255,200,0.2); background: rgba(0,255,200,0.03);">
+        <div class="pcard-icon">🦾</div>
+        <div class="pcard-name">META FINAL</div>
+        <div class="pcard-title">SOFI DroidHuman</div>
+        <div class="pcard-desc">Esqueleto mecánico + músculos MAXON + piel colágeno sintético + visión IA + energía propia. Todo el sistema de software actual es su cerebro.</div>
+        <div class="pcard-tag" style="border-color:var(--jade); color:var(--jade);">OBJETIVO PRIMARIO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-full"></div>
+
+<!-- POR QUÉ SOFI -->
+<section id="why">
+  <div class="container">
+    <div class="section-label reveal">VENTAJAS COMPETITIVAS</div>
+    <h2 class="reveal">POR QUÉ<br><span class="gold">SOFI GANA</span></h2>
+    <p class="section-body reveal">6 razones concretas y verificables por las que esta inversión tiene sentido ahora mismo.</p>
+
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <div class="why-num">01</div>
+        <div>
+          <div class="why-title">CÓDIGO REAL EN PRODUCCIÓN</div>
+          <div class="why-body">30 endpoints activos corriendo en Render.com. Servidor Node.js funcionando. No mockups, no demos — sistema operando 24/7 hoy mismo.</div>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">02</div>
+        <div>
+          <div class="why-title">IP BLINDADA</div>
+          <div class="why-body">Blockchain OpenTimestamps SHA-256 + INDAUTOR México + archivos RAR fechados desde 2025. Propiedad intelectual protegida antes de levantar capital.</div>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">03</div>
+        <div>
+          <div class="why-title">IMPACTO SOCIAL VERIFICABLE</div>
+          <div class="why-body">Buy1→Sponsor1: cada dispositivo VIP financia uno Standard para personas con discapacidad sensorial en Mérida, Yucatán. Impacto real desde el día 1.</div>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">04</div>
+        <div>
+          <div class="why-title">REVENUE EXISTENTE</div>
+          <div class="why-body">3 libros publicados en Hotmart con afiliados activos. Ingresos reales hoy, no proyecciones. La máquina de revenue ya funciona antes del hardware.</div>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">05</div>
+        <div>
+          <div class="why-title">FUNDAMENTO TEÓRICO ÚNICO</div>
+          <div class="why-body">Teoría Unificada de Plasticidad y Filtración Universal + Teoría de los 9 Planos, documentadas con referencias académicas. Diferenciador que nadie puede copiar.</div>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-num">06</div>
+        <div>
+          <div class="why-title">CONSTRUIDO DESDE CERO</div>
+          <div class="why-body">Desarrollado por Víctor Hugo González Torres desde Android, sin capital inicial. Demuestra la capacidad de ejecutar con recursos mínimos. La inversión multiplica lo que ya existe.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-full"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label reveal">USO DE CAPITAL</div>
+    <h2 class="reveal">ROADMAP DE<br><span class="jade">INVERSIÓN</span></h2>
+    <p class="section-body reveal">Cada peso tiene destino específico y resultado verificable. Sin gastos de estructura. Directo a prototipos.</p>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-phase">FASE 01 · INMEDIATO</div>
+          <div class="tl-title">PRIMER PROTOTIPO INTEGRA PERCEPTIVA</div>
+          <div class="tl-body">Pulsera K'IN con MAX30102. Bastón inteligente ESP32. Auriculares binaural 12.3 Hz. Colgante LINO con sensor biométrico. Los 5 dispositivos físicos pasan de diseño a prototipo funcional.</div>
+        </div>
+        <div class="tl-amount">$50K MXN</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-phase">FASE 02 · 3-6 MESES</div>
+          <div class="tl-title">PRODUCCIÓN PEQUEÑA ESCALA + BUY1 SPONSOR1</div>
+          <div class="tl-body">50 unidades de cada dispositivo. Lanzamiento del programa Buy1→Sponsor1 en Mérida. Primeras integraciones con SOFI v4.1 en hardware real. Validación clínica con perfiles de discapacidad sensorial.</div>
+        </div>
+        <div class="tl-amount">$200K MXN</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-phase">FASE 03 · 6-12 MESES</div>
+          <div class="tl-title">ESCALAMIENTO + TOKEN SOFI EN SOLANA</div>
+          <div class="tl-body">Distribución nacional. Lanzamiento del Token SOFI para el plan Inversionista. Aceleradoras: Wellfound, F6S, 500 Global, Startup México. Preparación del primer esqueleto mecánico del DroidHuman.</div>
+        </div>
+        <div class="tl-amount">$500K MXN</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-phase">FASE 04 · 12-24 MESES</div>
+          <div class="tl-title">SOFI DROI DHUMAN — PRIMER PROTOTIPO FÍSICO</div>
+          <div class="tl-body">Esqueleto mecánico + músculos sintéticos MAXON + piel de colágeno sintético + visión por cámara. El primer DroidHuman funcional construido desde México. Meta final del sistema completo.</div>
+        </div>
+        <div class="tl-amount">$2M+ MXN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-full"></div>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div>
+      <div class="section-label reveal">SIGUIENTE PASO</div>
+      <div class="cta-title reveal">
+        HABLEMOS.<br>
+        <span>HOY.</span>
+      </div>
+      <p class="cta-sub reveal">El sistema ya existe. El hardware está diseñado. La IP está protegida. Lo único que falta es el capital para los primeros prototipos físicos. Una sola reunión puede cambiar la trayectoria del proyecto.</p>
+      <div class="hero-btns reveal">
+        <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-primary">VER SOFI LIVE →</a>
+        <a href="https://github.com/estigia920-bit" target="_blank" class="btn-secondary">VER GITHUB</a>
+      </div>
+    </div>
+
+    <div class="contact-box reveal">
+      <div class="contact-method">💚 CLABE — MERCADO PAGO</div>
+      <div class="contact-val" id="clabe">722969017167745283</div>
+      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; margin-bottom:16px;">Víctor Hugo González Torres · Mercado Pago W</div>
+      <button class="copy-btn" onclick="copyText('722969017167745283', 'clabe')">COPIAR CLABE →</button>
+
+      <div class="divider-h"></div>
+
+      <div class="contact-method">🏦 BANCO AZTECA</div>
+      <div class="contact-val" id="banco">127910001215309542</div>
+      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; margin-bottom:16px;">Víctor Hugo González Torres · Transferencia interbancaria</div>
+      <button class="copy-btn" onclick="copyText('127910001215309542', 'banco')">COPIAR CUENTA →</button>
+
+      <div class="divider-h"></div>
+      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; line-height:1.8;">
+        📍 Mérida, Yucatán, México<br>
+        🌐 <a href="https://sofi-mcpp.onrender.com" target="_blank" style="color:var(--jade);">sofi-mcpp.onrender.com</a><br>
+        💻 <a href="https://github.com/estigia920-bit" target="_blank" style="color:var(--jade);">github.com/estigia920-bit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>SOFI</span> DROI DHUMAN</div>
+  <div class="footer-copy">
+    © 2025–2026 HaaPpDigitalV · IP: OpenTimestamps SHA-256 · INDAUTOR México<br>
+    Víctor Hugo González Torres · Estigia Bono · Mérida, Yucatán
+  </div>
+</footer>
+
+<script>
+// ── COPY ──
+function copyText(text, id) {
+  navigator.clipboard.writeText(text).catch(() => {
+    var el = document.getElementById(id);
+    var r = document.createRange();
+    r.selectNode(el); window.getSelection().removeAllRanges();
+    window.getSelection().addRange(r); document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+  }).finally(() => {
+    var t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  });
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── HERO CANVAS ──
+(function() {
+  var c = document.getElementById('hero-canvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var nodes = [];
+
+  function resize() { c.width = c.offsetWidth; c.height = c.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  for (var i = 0; i < 80; i++) {
+    nodes.push({
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      r: Math.random() * 2.5 + 0.5
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    nodes.forEach(function(n) {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > c.width) n.vx *= -1;
+      if (n.y < 0 || n.y > c.height) n.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,255,200,0.7)';
+      ctx.fill();
+    });
+    nodes.forEach(function(a, i) {
+      nodes.forEach(function(b, j) {
+        if (i >= j) return;
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 140) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = 'rgba(0,255,200,' + (0.12 * (1 - d / 140)) + ')';
+          ctx.lineWidth = 0.5; ctx.stroke();
+        }
+      });
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── REVEAL ON SCROLL ──
+var reveals = document.querySelectorAll('.reveal');
+function checkReveal() {
+  reveals.forEach(function(el) {
+    var r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight - 60) el.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', checkReveal);
+checkReveal();
+</script>
+</body>
+</html>
