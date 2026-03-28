@@ -994,3 +994,18 @@ window.addEventListener('scroll', checkReveal); checkReveal();
 </script>
 </body>
 </html>
+// Dentro de sendMsg (después de obtener respuesta, o antes)
+if (msg.toLowerCase().includes('unión') || msg.toLowerCase().includes('teletransporte')) {
+  // Obtener la frecuencia actual (puedes guardarla en una variable global)
+  const freqActual = parseFloat(document.getElementById('hz-display')?.innerText || 12.3);
+  const freqObjetivo = 40.0; // por ejemplo, la frecuencia de la galaxia o de un dispositivo
+  try {
+    const res = await fetch('/api/union-frecuencial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ frecuencia1: freqActual, frecuencia2: freqObjetivo })
+    });
+    const data = await res.json();
+    response = `🧬 Unión frecuencial: ${(data.union*100).toFixed(1)}% con ${freqObjetivo} Hz. ${data.mensaje}`;
+  } catch(e) { /* fallback */ }
+}
