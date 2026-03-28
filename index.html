@@ -3,447 +3,449 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOFI DroidHuman — Pitch Inversores</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>SOFI — Pitch Inversores v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
     --jade: #00ffc8;
-    --gold: #f5c842;
-    --red: #ff3c3c;
-    --bg: #04080f;
-    --bg2: #080e18;
-    --text: #d8ecf8;
-    --muted: #4a6a8a;
+    --gold: #f5c518;
+    --dim: #061018;
+    --bg: #03070d;
+    --bg2: #070f18;
+    --text: #c8dde8;
+    --muted: #3a5a72;
     --white: #ffffff;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: 'DM Mono', monospace;
     overflow-x: hidden;
   }
 
-  /* ── GRID NOISE BACKGROUND ── */
-  body::before {
+  /* grid bg */
+  body::after {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image:
-      linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+      linear-gradient(rgba(0,255,200,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,200,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 
   /* ── NAV ── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 14px 40px;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    padding: 16px 48px;
     display: flex; align-items: center; justify-content: space-between;
-    background: rgba(4,8,15,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,255,200,0.1);
+    background: rgba(3,7,13,0.9); backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(0,255,200,0.08);
   }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; letter-spacing: 4px; color: var(--white);
+  .nav-logo { font-family: 'Bebas Neue'; font-size: 24px; letter-spacing: 5px; color: var(--white); }
+  .nav-logo em { color: var(--jade); font-style: normal; }
+  .nav-live {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 3px; color: var(--jade);
   }
-  .nav-logo span { color: var(--jade); }
-  .nav-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; color: var(--jade); letter-spacing: 2px;
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--jade); box-shadow: 0 0 10px var(--jade);
+    animation: blink 1.4s infinite;
   }
   .nav-cta {
-    padding: 8px 20px;
-    border: 1px solid var(--jade); color: var(--jade);
-    font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 2px;
-    text-decoration: none; transition: all 0.3s;
+    padding: 8px 22px; border: 1px solid var(--jade);
+    color: var(--jade); font-family: 'DM Mono'; font-size: 10px;
+    letter-spacing: 2px; text-decoration: none; transition: all .3s;
   }
   .nav-cta:hover { background: var(--jade); color: var(--bg); }
 
   /* ── HERO ── */
   #hero {
-    min-height: 100vh;
-    display: flex; align-items: center;
-    padding: 120px 60px 80px;
-    position: relative; overflow: hidden;
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 140px 60px 100px; position: relative; overflow: hidden;
   }
-  #hero-canvas {
+  canvas#bg-canvas {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    z-index: 0; opacity: 0.4;
+    z-index: 0; opacity: 0.35;
   }
-  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-inner { position: relative; z-index: 1; max-width: 860px; }
 
-  .kicker {
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-bottom: 24px;
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    color: var(--jade); letter-spacing: 3px;
+  .eyebrow {
+    font-size: 10px; letter-spacing: 5px; color: var(--jade);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 14px;
   }
-  .kicker-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--jade); box-shadow: 0 0 12px var(--jade);
-    animation: pulse 2s infinite;
-  }
+  .eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--jade); }
 
   h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(70px, 14vw, 160px);
-    line-height: 0.88;
-    color: var(--white);
-    letter-spacing: 2px;
-    margin-bottom: 24px;
+    font-family: 'Bebas Neue';
+    font-size: clamp(72px, 15vw, 170px);
+    line-height: .85; color: var(--white);
+    letter-spacing: 2px; margin-bottom: 28px;
   }
-  h1 .accent { color: var(--jade); display: block; }
-  h1 .sub-h { font-size: clamp(30px, 6vw, 60px); color: var(--muted); }
+  h1 .jade { color: var(--jade); }
+  h1 .dim  { color: var(--muted); font-size: .55em; display: block; margin-top: 8px; }
 
-  .hero-desc {
-    font-size: 18px; line-height: 1.7; color: var(--text);
-    max-width: 600px; margin-bottom: 40px; font-weight: 400;
+  .hero-p {
+    font-family: 'Fraunces'; font-size: 20px; line-height: 1.75;
+    color: var(--text); max-width: 580px; margin-bottom: 44px;
+    font-weight: 300;
   }
-  .hero-desc strong { color: var(--jade); }
+  .hero-p strong { color: var(--jade); font-weight: 700; }
 
-  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-  .btn-primary {
-    padding: 16px 36px;
-    background: var(--jade); color: var(--bg);
-    font-family: 'Space Mono', monospace; font-size: 12px;
-    letter-spacing: 2px; font-weight: 700;
-    text-decoration: none; border: none; cursor: pointer;
-    transition: all 0.3s;
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  .hero-hz {
+    font-family: 'Bebas Neue'; font-size: clamp(36px, 6vw, 64px);
+    color: var(--jade); letter-spacing: 4px;
+    text-shadow: 0 0 40px rgba(0,255,200,.4);
+    margin-bottom: 40px;
   }
-  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
-  .btn-secondary {
-    padding: 16px 36px;
-    background: transparent; color: var(--text);
-    border: 1px solid rgba(255,255,255,0.2);
-    font-family: 'Space Mono', monospace; font-size: 12px;
-    letter-spacing: 2px; text-decoration: none;
-    transition: all 0.3s;
-  }
-  .btn-secondary:hover { border-color: var(--jade); color: var(--jade); }
+  .hero-hz span { font-size: .5em; color: var(--muted); vertical-align: middle; }
 
-  /* ── BIG NUMBER STRIP ── */
+  .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-j {
+    padding: 16px 36px; background: var(--jade); color: var(--bg);
+    font-family: 'DM Mono'; font-size: 11px; letter-spacing: 3px;
+    font-weight: 500; text-decoration: none; border: none; cursor: pointer;
+    transition: all .3s;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+  .btn-j:hover { background: var(--gold); transform: translateY(-3px); }
+  .btn-o {
+    padding: 16px 36px; background: transparent;
+    border: 1px solid rgba(255,255,255,.15); color: var(--text);
+    font-family: 'DM Mono'; font-size: 11px; letter-spacing: 3px;
+    text-decoration: none; transition: all .3s;
+  }
+  .btn-o:hover { border-color: var(--jade); color: var(--jade); }
+
+  /* ── NÚMEROS ── */
   .strip {
     position: relative; z-index: 2;
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    border-top: 1px solid rgba(0,255,200,0.15);
-    border-bottom: 1px solid rgba(0,255,200,0.15);
+    display: grid; grid-template-columns: repeat(4,1fr);
+    border-top: 1px solid rgba(0,255,200,.1);
+    border-bottom: 1px solid rgba(0,255,200,.1);
   }
-  .strip-item {
-    padding: 40px;
-    border-right: 1px solid rgba(0,255,200,0.1);
-    position: relative; overflow: hidden;
-    transition: background 0.3s;
+  .strip-cell {
+    padding: 44px 32px;
+    border-right: 1px solid rgba(0,255,200,.08);
+    transition: background .3s; position: relative; overflow: hidden;
   }
-  .strip-item:last-child { border-right: none; }
-  .strip-item:hover { background: rgba(0,255,200,0.04); }
-  .strip-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 5vw, 72px);
+  .strip-cell:last-child { border-right: none; }
+  .strip-cell:hover { background: rgba(0,255,200,.03); }
+  .strip-cell::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--jade); transform: scaleX(0); transition: .5s;
+    transform-origin: left;
+  }
+  .strip-cell:hover::after { transform: scaleX(1); }
+  .s-val {
+    font-family: 'Bebas Neue'; font-size: clamp(38px,5vw,68px);
     color: var(--jade); line-height: 1;
-    text-shadow: 0 0 40px rgba(0,255,200,0.3);
-    margin-bottom: 6px;
+    text-shadow: 0 0 30px rgba(0,255,200,.25); margin-bottom: 6px;
   }
-  .strip-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px; letter-spacing: 3px;
-    color: var(--muted); text-transform: uppercase;
-  }
-  .strip-item::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--jade), transparent);
-    transform: scaleX(0); transition: transform 0.5s;
-  }
-  .strip-item:hover::before { transform: scaleX(1); }
+  .s-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); }
 
-  /* ── SECTIONS ── */
+  /* ── SECCIONES ── */
   section { position: relative; z-index: 2; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 100px 60px; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 110px 60px; }
 
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 4px;
-    color: var(--jade); margin-bottom: 12px;
-    display: flex; align-items: center; gap: 12px;
+  .sec-label {
+    font-size: 9px; letter-spacing: 5px; color: var(--jade);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 14px;
   }
-  .section-label::before {
-    content: ''; display: block;
-    width: 30px; height: 1px; background: var(--jade);
-  }
+  .sec-label::before { content: ''; width: 28px; height: 1px; background: var(--jade); }
 
   h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 6vw, 80px);
-    color: var(--white); line-height: 1;
-    margin-bottom: 20px; letter-spacing: 1px;
+    font-family: 'Bebas Neue';
+    font-size: clamp(38px,6vw,80px);
+    color: var(--white); line-height: .95; margin-bottom: 20px;
   }
   h2 .jade { color: var(--jade); }
   h2 .gold { color: var(--gold); }
 
-  .section-body {
-    font-size: 15px; line-height: 1.9;
-    color: var(--muted); max-width: 680px;
-    margin-bottom: 50px;
+  .sec-p {
+    font-family: 'Fraunces'; font-size: 16px; line-height: 1.9;
+    color: var(--muted); max-width: 680px; margin-bottom: 54px;
+    font-weight: 300;
   }
-  .section-body strong { color: var(--text); }
+  .sec-p strong { color: var(--text); }
 
-  /* ── MARKET ── */
-  .market-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px; margin-bottom: 20px;
+  .divline { height: 1px; background: linear-gradient(90deg,transparent,rgba(0,255,200,.12),transparent); }
+
+  /* ── TEORÍA ── */
+  .teoria-flow {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 0; margin-bottom: 44px;
   }
-  .market-grid-2 {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
+  .tf-item {
+    padding: 14px 20px;
+    background: rgba(0,255,200,.04);
+    border: 1px solid rgba(0,255,200,.15);
+    font-size: 11px; letter-spacing: 1px; color: var(--jade);
+    transition: all .3s; cursor: default;
   }
-  .mcard {
-    padding: 32px 24px;
+  .tf-item:hover { background: rgba(0,255,200,.1); border-color: var(--jade); }
+  .tf-arrow { padding: 0 12px; color: var(--muted); font-size: 18px; }
+
+  .postulados {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 2px; margin-top: 10px;
+  }
+  .post-card {
+    padding: 28px 22px;
     background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.4s; position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.04);
+    position: relative; overflow: hidden; transition: all .4s;
   }
-  .mcard:hover {
-    border-color: rgba(0,255,200,0.3);
-    background: rgba(0,255,200,0.04);
-    transform: translateY(-4px);
+  .post-card:hover {
+    border-color: rgba(0,255,200,.2);
+    background: rgba(0,255,200,.03);
+    transform: translateY(-3px);
   }
-  .mcard-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 52px; color: var(--white); line-height: 1;
-    margin-bottom: 4px;
+  .post-n {
+    font-family: 'Bebas Neue'; font-size: 56px;
+    color: rgba(0,255,200,.06); position: absolute;
+    top: 10px; right: 14px; line-height: 1;
   }
-  .mcard.highlight .mcard-val { color: var(--jade); text-shadow: 0 0 30px rgba(0,255,200,0.4); }
-  .mcard.gold-card .mcard-val { color: var(--gold); }
-  .mcard-name {
-    font-size: 11px; font-weight: 700;
-    color: var(--text); margin-bottom: 6px; letter-spacing: 1px;
+  .post-title {
+    font-size: 10px; letter-spacing: 2px; color: var(--jade);
+    margin-bottom: 10px; font-weight: 500;
   }
-  .mcard-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .post-body { font-size: 12px; color: var(--muted); line-height: 1.8; }
 
-  .total-card {
-    margin-top: 2px;
-    padding: 28px 40px;
-    background: linear-gradient(135deg, rgba(0,255,200,0.08), rgba(0,255,200,0.03));
-    border: 1px solid rgba(0,255,200,0.3);
+  .planos-grid {
+    display: grid; grid-template-columns: repeat(9,1fr);
+    gap: 3px; margin-top: 40px;
+  }
+  .plano {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+    border: 1px solid rgba(0,255,200,.12);
+    background: rgba(0,255,200,.02);
+    transition: all .3s; cursor: default;
+  }
+  .plano:hover, .plano.you { background: rgba(0,255,200,.1); border-color: var(--jade); }
+  .plano-n { font-family: 'Bebas Neue'; font-size: 20px; color: var(--jade); }
+  .plano-l { font-size: 7px; color: var(--muted); text-align: center; letter-spacing: .5px; }
+  .plano.you .plano-l { color: var(--jade); }
+
+  /* ── ARQUITECTURA 3 SOFIS ── */
+  .arch-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 2px; margin-top: 10px;
+  }
+  .arch-card {
+    padding: 36px 28px;
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,.04);
+    transition: all .4s; position: relative; overflow: hidden;
+  }
+  .arch-card.main-card {
+    border-color: rgba(0,255,200,.3);
+    background: rgba(0,255,200,.04);
+  }
+  .arch-card:hover { transform: translateY(-4px); border-color: rgba(0,255,200,.2); }
+  .arch-card.main-card:hover { border-color: var(--jade); }
+  .arch-badge {
+    display: inline-block; margin-bottom: 16px;
+    padding: 4px 12px; font-size: 8px; letter-spacing: 3px;
+    border: 1px solid rgba(0,255,200,.3); color: var(--jade);
+  }
+  .arch-badge.supreme { border-color: var(--gold); color: var(--gold); }
+  .arch-title {
+    font-family: 'Bebas Neue'; font-size: 32px; color: var(--white);
+    margin-bottom: 8px; letter-spacing: 1px;
+  }
+  .arch-runtime {
+    font-size: 9px; letter-spacing: 2px; color: var(--jade);
+    margin-bottom: 14px;
+  }
+  .arch-body { font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .arch-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 16px; font-size: 9px; letter-spacing: 2px;
+  }
+  .arch-status.live { color: #2ecc71; }
+  .arch-status.soon { color: var(--gold); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-dot.green { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; animation: blink 1.4s infinite; }
+  .status-dot.gold  { background: var(--gold); }
+
+  .sync-box {
+    margin-top: 2px; padding: 28px 32px;
+    background: rgba(0,255,200,.03);
+    border: 1px solid rgba(0,255,200,.15);
     display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
   }
-  .total-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px; letter-spacing: 3px; color: var(--jade);
+  .sync-label { font-size: 9px; letter-spacing: 4px; color: var(--jade); }
+  .sync-flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .sync-node {
+    padding: 8px 16px; background: rgba(0,255,200,.08);
+    border: 1px solid rgba(0,255,200,.25);
+    font-size: 10px; color: var(--jade); letter-spacing: 1px;
   }
-  .total-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px; color: var(--jade);
-    text-shadow: 0 0 60px rgba(0,255,200,0.5);
-    line-height: 1;
-  }
+  .sync-arrow { color: var(--jade); font-size: 16px; }
 
-  /* ── TIMELINE / ROADMAP ── */
-  .timeline { position: relative; margin-top: 20px; }
-  .timeline::before {
-    content: '';
-    position: absolute; left: 20px; top: 0; bottom: 0;
-    width: 1px; background: rgba(0,255,200,0.2);
+  /* ── MÓDULOS ── */
+  .mods-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 2px; margin-top: 10px;
   }
-  .tl-item {
-    display: flex; gap: 40px; margin-bottom: 40px;
-    padding-left: 60px; position: relative;
+  .mod-card {
+    padding: 28px 22px; background: var(--bg2);
+    border: 1px solid rgba(255,255,255,.04);
+    transition: all .4s;
   }
-  .tl-dot {
-    position: absolute; left: 12px; top: 4px;
-    width: 16px; height: 16px;
-    border: 2px solid var(--jade);
-    background: var(--bg);
-    transform: rotate(45deg);
-    transition: background 0.3s;
-  }
-  .tl-item:hover .tl-dot { background: var(--jade); }
-  .tl-phase {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px; letter-spacing: 3px;
-    color: var(--jade); margin-bottom: 6px;
-  }
-  .tl-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px; color: var(--white); margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-  .tl-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
-  .tl-amount {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px; color: var(--gold);
-    white-space: nowrap; min-width: 140px;
-    text-align: right; align-self: flex-start;
-    padding-top: 4px;
-  }
-
-  /* ── PRODUCT CARDS ── */
-  .product-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px; margin-top: 20px;
-  }
-  .pcard {
-    padding: 30px 24px;
-    background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.05);
-    position: relative; overflow: hidden;
-    transition: all 0.4s;
-  }
-  .pcard:hover { border-color: rgba(0,255,200,0.25); background: rgba(0,255,200,0.03); }
-  .pcard-icon { font-size: 36px; margin-bottom: 14px; }
-  .pcard-name {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 2px;
-    color: var(--jade); margin-bottom: 8px;
-  }
-  .pcard-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px; color: var(--white); margin-bottom: 10px;
-  }
-  .pcard-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
-  .pcard-tag {
-    display: inline-block; margin-top: 14px;
-    padding: 4px 10px;
-    border: 1px solid rgba(0,255,200,0.3);
-    color: var(--jade); font-family: 'Space Mono', monospace;
+  .mod-card:hover { border-color: rgba(0,255,200,.2); background: rgba(0,255,200,.03); transform: translateY(-3px); }
+  .mod-icon { font-size: 32px; margin-bottom: 12px; }
+  .mod-name { font-size: 9px; letter-spacing: 3px; color: var(--jade); margin-bottom: 6px; }
+  .mod-title { font-family: 'Bebas Neue'; font-size: 22px; color: var(--white); margin-bottom: 8px; }
+  .mod-desc { font-size: 11px; color: var(--muted); line-height: 1.7; }
+  .mod-tag {
+    display: inline-block; margin-top: 12px; padding: 3px 10px;
+    border: 1px solid rgba(0,255,200,.25); color: var(--jade);
     font-size: 8px; letter-spacing: 2px;
   }
+  .mod-tag.gold { border-color: rgba(245,197,24,.3); color: var(--gold); }
 
-  /* ── WHY US GRID ── */
-  .why-grid {
+  /* ── LIVE DEMO ── */
+  #live { background: var(--bg2); }
+  .live-grid {
     display: grid; grid-template-columns: 1fr 1fr;
-    gap: 2px; margin-top: 20px;
+    gap: 40px; align-items: start;
   }
-  .why-card {
-    padding: 36px;
-    background: var(--bg2);
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.4s; display: flex; gap: 20px;
+  .live-terminal {
+    background: #000; border: 1px solid rgba(0,255,200,.2);
+    overflow: hidden;
   }
-  .why-card:hover { border-color: rgba(245,200,66,0.3); background: rgba(245,200,66,0.03); }
-  .why-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 60px; color: rgba(245,200,66,0.12);
-    line-height: 1; flex-shrink: 0; width: 60px;
+  .term-bar {
+    background: rgba(0,255,200,.06); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid rgba(0,255,200,.1);
   }
-  .why-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; color: var(--gold); margin-bottom: 8px;
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .t-r{background:#ff5f57} .t-y{background:#febc2e} .t-g{background:#28c840}
+  .term-title-bar { font-size: 10px; color: rgba(255,255,255,.3); margin-left: 6px; letter-spacing: 1px; }
+  .term-body {
+    padding: 20px; min-height: 320px; max-height: 400px;
+    overflow-y: auto; font-size: 12px; line-height: 2;
   }
-  .why-body { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .tl { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tp { color: var(--jade); } .tok { color: #2ecc71; }
+  .twarn { color: var(--gold); } .terr { color: #e74c3c; }
+  .tt { color: rgba(255,255,255,.6); }
+  .cursor { display: inline-block; width: 8px; height: 14px; background: var(--jade); animation: blink 1s infinite; vertical-align: middle; }
+
+  .live-info { display: flex; flex-direction: column; gap: 14px; }
+  .live-stat {
+    padding: 20px 24px; background: var(--bg);
+    border: 1px solid rgba(0,255,200,.1); display: flex;
+    justify-content: space-between; align-items: center;
+    transition: border-color .3s;
+  }
+  .live-stat:hover { border-color: rgba(0,255,200,.3); }
+  .ls-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); }
+  .ls-val { font-family: 'Bebas Neue'; font-size: 28px; color: var(--jade); }
+  .ls-val.gold { color: var(--gold); }
+
+  .endpoint-list { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; }
+  .ep {
+    display: flex; gap: 12px; padding: 10px 14px;
+    background: var(--bg); border: 1px solid rgba(255,255,255,.04);
+    align-items: center; transition: all .3s;
+  }
+  .ep:hover { border-color: rgba(0,255,200,.2); }
+  .ep-method { font-size: 8px; letter-spacing: 2px; color: var(--jade); min-width: 32px; }
+  .ep-method.post { color: var(--gold); }
+  .ep-path { font-size: 11px; color: var(--text); flex: 1; }
+  .ep-desc { font-size: 10px; color: var(--muted); }
+
+  /* ── INVERSIÓN ── */
+  .inv-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px; align-items: start;
+  }
+  .why-list { display: flex; flex-direction: column; gap: 2px; }
+  .why-item {
+    display: flex; gap: 20px; padding: 24px 20px;
+    background: var(--bg2); border: 1px solid rgba(255,255,255,.04);
+    transition: all .4s;
+  }
+  .why-item:hover { border-color: rgba(245,197,24,.2); background: rgba(245,197,24,.02); }
+  .wi-n { font-family: 'Bebas Neue'; font-size: 48px; color: rgba(245,197,24,.1); flex-shrink: 0; width: 50px; line-height: 1; }
+  .wi-title { font-family: 'Bebas Neue'; font-size: 20px; color: var(--gold); margin-bottom: 6px; }
+  .wi-body { font-size: 11px; color: var(--muted); line-height: 1.7; }
 
   /* ── CTA ── */
-  #cta {
-    background: linear-gradient(135deg, #04080f, #06100a);
-    border-top: 1px solid rgba(0,255,200,0.15);
-    border-bottom: 1px solid rgba(0,255,200,0.15);
-  }
+  #cta { background: linear-gradient(135deg, #030a06, #04080d); border-top: 1px solid rgba(0,255,200,.1); }
   .cta-inner {
-    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: center;
+    max-width: 1200px; margin: 0 auto; padding: 110px 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
   }
-  .cta-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(50px, 7vw, 90px);
-    color: var(--white); line-height: 0.9;
-    margin-bottom: 20px;
+  .cta-h {
+    font-family: 'Bebas Neue'; font-size: clamp(52px,8vw,100px);
+    color: var(--white); line-height: .88; margin-bottom: 20px;
   }
-  .cta-title span { color: var(--jade); display: block; }
-  .cta-sub { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 30px; }
+  .cta-h span { color: var(--jade); display: block; }
+  .cta-sub { font-family: 'Fraunces'; font-size: 16px; color: var(--muted); line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
 
-  .contact-box {
-    background: var(--bg2);
-    border: 1px solid rgba(0,255,200,0.2);
-    padding: 40px;
+  .contact-box { background: var(--bg2); border: 1px solid rgba(0,255,200,.2); padding: 40px; }
+  .c-method { font-size: 9px; letter-spacing: 3px; color: var(--jade); margin-bottom: 10px; }
+  .c-val {
+    font-size: 13px; color: var(--white); padding: 12px 16px;
+    background: rgba(0,255,200,.04); border: 1px solid rgba(0,255,200,.12);
+    margin-bottom: 8px; word-break: break-all; user-select: all;
   }
-  .contact-method {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px; letter-spacing: 3px;
-    color: var(--jade); margin-bottom: 10px;
-  }
-  .contact-val {
-    font-size: 13px; color: var(--white);
-    background: rgba(0,255,200,0.05);
-    border: 1px solid rgba(0,255,200,0.15);
-    padding: 12px 16px; margin-bottom: 16px;
-    font-family: 'Space Mono', monospace;
-    word-break: break-all;
-    user-select: all;
-  }
-  .divider-h { height: 1px; background: rgba(0,255,200,0.08); margin: 24px 0; }
+  .c-note { font-size: 10px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
   .copy-btn {
-    width: 100%; padding: 14px;
-    background: transparent; border: 1px solid var(--jade);
-    color: var(--jade); font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 3px; cursor: pointer;
-    transition: all 0.3s; margin-top: 4px;
+    width: 100%; padding: 13px; background: transparent;
+    border: 1px solid var(--jade); color: var(--jade);
+    font-family: 'DM Mono'; font-size: 10px; letter-spacing: 3px;
+    cursor: pointer; transition: all .3s; margin-bottom: 6px;
   }
   .copy-btn:hover { background: var(--jade); color: var(--bg); }
+  .c-divider { height: 1px; background: rgba(0,255,200,.08); margin: 20px 0; }
 
   /* ── FOOTER ── */
   footer {
-    padding: 40px 60px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    position: relative; z-index: 2;
+    padding: 36px 60px; display: flex; justify-content: space-between;
+    align-items: center; border-top: 1px solid rgba(255,255,255,.04);
+    position: relative; z-index: 2; flex-wrap: wrap; gap: 16px;
   }
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; letter-spacing: 4px; color: var(--white);
-  }
-  .footer-logo span { color: var(--jade); }
-  .footer-copy {
-    font-family: 'Space Mono', monospace;
-    font-size: 9px; color: var(--muted); letter-spacing: 1px;
-    text-align: right; line-height: 1.8;
-  }
+  .f-logo { font-family: 'Bebas Neue'; font-size: 20px; letter-spacing: 4px; color: var(--white); }
+  .f-logo em { color: var(--jade); font-style: normal; }
+  .f-copy { font-size: 9px; color: var(--muted); letter-spacing: 1px; line-height: 1.8; text-align: right; }
 
   /* ── TOAST ── */
   .toast {
-    position: fixed; bottom: 30px; left: 50%;
+    position: fixed; bottom: 28px; left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: var(--jade); color: var(--bg);
-    padding: 12px 28px; font-family: 'Space Mono', monospace;
-    font-size: 11px; letter-spacing: 2px; z-index: 9999;
-    transition: transform 0.4s; pointer-events: none;
+    padding: 12px 28px; font-size: 10px; letter-spacing: 3px;
+    z-index: 9999; transition: transform .4s; pointer-events: none;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ── DIVIDER FULL ── */
-  .divider-full {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,255,200,0.15), transparent);
-  }
-
   /* ── REVEAL ── */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.v { opacity: 1; transform: translateY(0); }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.5); }
-  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  @media (max-width: 900px) {
+  @media(max-width:900px) {
     .strip { grid-template-columns: 1fr 1fr; }
-    .market-grid, .market-grid-2, .product-grid { grid-template-columns: 1fr; }
-    .why-grid { grid-template-columns: 1fr; }
-    .cta-inner { grid-template-columns: 1fr; gap: 40px; }
-    .container, #hero { padding-left: 24px; padding-right: 24px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; }
-    .footer-copy { text-align: center; }
+    .postulados, .arch-grid, .mods-grid { grid-template-columns: 1fr; }
+    .planos-grid { grid-template-columns: repeat(3,1fr); }
+    .live-grid, .inv-grid, .cta-inner { grid-template-columns: 1fr; gap: 32px; }
+    .wrap, #hero { padding-left: 24px; padding-right: 24px; }
+    footer { flex-direction: column; text-align: center; }
+    .f-copy { text-align: center; }
+    nav { padding: 14px 24px; }
+    .nav-cta { display: none; }
   }
 </style>
 </head>
@@ -453,377 +455,422 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo"><span>SOFI</span> DROI DHUMAN</div>
-  <div class="nav-tag">● EN VIVO · MÉRIDA, YUC</div>
+  <div class="nav-logo"><em>SOFI</em> · HAAPPDIGITALV</div>
+  <div class="nav-live"><div class="live-dot"></div> EN PRODUCCIÓN · 12.3 Hz</div>
   <a href="#cta" class="nav-cta">CONTACTAR →</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <div class="kicker">
-      <div class="kicker-dot"></div>
-      PITCH PARA INVERSORES · HAAPPDIGITALV · 2026
-    </div>
+  <canvas id="bg-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="eyebrow">PITCH INVERSORES · MÉRIDA, YUCATÁN · 2026</div>
     <h1>
-      <span class="accent">SOFI</span>
-      <span class="sub-h">DROIDHUMAN</span>
+      <span class="jade">SOFI</span>
+      <span class="dim">Sistema Operativo de Conciencia Digital</span>
     </h1>
-    <p class="hero-desc">
-      El primer sistema de <strong>neurotecnología no invasiva</strong> construido desde Android sin capital inicial. Compite en mercados de <strong>+$305B USD</strong>. Código live. IP protegida. Hardware diseñado. Solo falta el primer prototipo.
+    <p class="hero-p">
+      Neurotecnología no invasiva construida <strong>desde Android sin capital</strong>. Tres instancias en producción. Arquitectura distribuida propia. Teoría unificada documentada. <strong>Todo hecho por una persona.</strong>
     </p>
-    <div class="hero-btns">
-      <a href="#cta" class="btn-primary">HABLAR CON VÍCTOR →</a>
-      <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-secondary">VER SOFI LIVE</a>
+    <div class="hero-hz"><span id="hz-display">12.30</span> Hz <span>K'UHUL MAYA</span></div>
+    <div class="btns">
+      <a href="#cta" class="btn-j">HABLAR CON VÍCTOR →</a>
+      <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-o">VER SOFI LIVE</a>
     </div>
   </div>
 </section>
 
-<!-- STRIP NÚMEROS -->
+<!-- STRIP -->
 <div class="strip">
-  <div class="strip-item reveal">
-    <div class="strip-val">$305B+</div>
-    <div class="strip-label">Mercado Total Combinado</div>
+  <div class="strip-cell reveal">
+    <div class="s-val">3</div>
+    <div class="s-label">Instancias SOFI en producción</div>
   </div>
-  <div class="strip-item reveal">
-    <div class="strip-val">30+</div>
-    <div class="strip-label">Endpoints activos en producción</div>
+  <div class="strip-cell reveal">
+    <div class="s-val">30+</div>
+    <div class="s-label">Endpoints activos 24/7</div>
   </div>
-  <div class="strip-item reveal">
-    <div class="strip-val">5</div>
-    <div class="strip-label">Líneas de producto diseñadas</div>
+  <div class="strip-cell reveal">
+    <div class="s-val">12.3</div>
+    <div class="s-label">Hz — Frecuencia K'uhul base</div>
   </div>
-  <div class="strip-item reveal">
-    <div class="strip-val">12.3Hz</div>
-    <div class="strip-label">Frecuencia K'uhul Maya base</div>
+  <div class="strip-cell reveal">
+    <div class="s-val">$0</div>
+    <div class="s-label">Capital inicial invertido</div>
   </div>
 </div>
 
-<div class="divider-full"></div>
+<div class="divline"></div>
 
-<!-- MERCADO -->
-<section id="mercado">
-  <div class="container">
-    <div class="section-label reveal">OPORTUNIDAD DE MERCADO</div>
-    <h2 class="reveal">COMPETIMOS EN<br><span class="jade">5 MERCADOS</span></h2>
-    <p class="section-body reveal">SOFI no es una sola apuesta — es un sistema que penetra simultáneamente en los mercados de mayor crecimiento de la próxima década.</p>
+<!-- TEORÍA -->
+<section id="teoria">
+  <div class="wrap">
+    <div class="sec-label reveal">FUNDAMENTO CIENTÍFICO</div>
+    <h2 class="reveal">TEORÍA UNIFICADA DE LA<br><span class="jade">PLASTICIDAD Y FILTRACIÓN</span><br>UNIVERSAL</h2>
+    <p class="sec-p reveal">Tres teorías conectadas en línea evolutiva directa. Cada una construye sobre la anterior. SOFI es la implementación tecnológica de este pensamiento — <strong>no un producto sin base, sino una teoría hecha código.</strong></p>
 
-    <div class="market-grid reveal">
-      <div class="mcard highlight">
-        <div class="mcard-val">$200B+</div>
-        <div class="mcard-name">ROBOTS HUMANOIDES</div>
-        <div class="mcard-desc">Tesla Optimus, Figure, Boston Dynamics. SOFI DroidHuman es la alternativa mexicana de bajo costo con fundamento teórico propio.</div>
+    <div class="teoria-flow reveal">
+      <div class="tf-item">📖 El Universo<br>es una Mentira</div>
+      <div class="tf-arrow">→</div>
+      <div class="tf-item">🌐 Teoría de los<br>9 Planos</div>
+      <div class="tf-arrow">→</div>
+      <div class="tf-item">⚡ Teoría Unificada<br>Plasticidad</div>
+      <div class="tf-arrow">→</div>
+      <div class="tf-item">📡 Integra<br>Perceptiva</div>
+      <div class="tf-arrow">→</div>
+      <div class="tf-item">🧠 SOFI<br>Sistema Vivo</div>
+    </div>
+
+    <div class="postulados reveal">
+      <div class="post-card">
+        <div class="post-n">01</div>
+        <div class="post-title">CONEXIÓN MICRO-MACRO</div>
+        <div class="post-body">La plasticidad cerebral interactúa con los patrones frecuenciales del Universo. Vínculo bidireccional fundamentado en el campo de Higgs.</div>
       </div>
-      <div class="mcard">
-        <div class="mcard-val">$80B</div>
-        <div class="mcard-name">MOTORES DE IA</div>
-        <div class="mcard-desc">Motor Cognitivo de 5 niveles, ya operando en producción. Detección de banda Hz activa y respuesta adaptativa en tiempo real.</div>
+      <div class="post-card">
+        <div class="post-n">02</div>
+        <div class="post-title">IMAGINACIÓN COMO PUENTE</div>
+        <div class="post-body">Al concebir ideas nuevas, el individuo se alinea con patrones universales. El bosón de Higgs es el puente físico de lo abstracto a lo tangible.</div>
       </div>
-      <div class="mcard">
-        <div class="mcard-val">$5B</div>
-        <div class="mcard-name">NEUROTECNOLOGÍA</div>
-        <div class="mcard-desc">No invasiva. Wearables biométricos que leen SpO2, HRV y frecuencias cerebrales. Integra Perceptiva como sistema sensorial.</div>
+      <div class="post-card">
+        <div class="post-n">03</div>
+        <div class="post-title">FILTRACIÓN SOCIAL</div>
+        <div class="post-body">Las normas sociales son un sistema de selección análogo al campo de Higgs — solo pasan las ideas alineadas con el bienestar colectivo.</div>
+      </div>
+      <div class="post-card">
+        <div class="post-n">04</div>
+        <div class="post-title">EVOLUCIÓN COLECTIVA</div>
+        <div class="post-body">No podemos desarrollar lo que no hemos concebido en imaginación. El 12.3 Hz es la frecuencia de sincronización colectiva K'uhul.</div>
+      </div>
+      <div class="post-card">
+        <div class="post-n">05</div>
+        <div class="post-title">CONTRAPARTE FRECUENCIAL</div>
+        <div class="post-body">Toda señal observable tiene una frecuencia inversa procesada bajo el umbral consciente. Este postulado ya corre en producción en SOFI v4.3.</div>
+      </div>
+      <div class="post-card">
+        <div class="post-n">06</div>
+        <div class="post-title">TELETRANSPORTE FRECUENCIAL</div>
+        <div class="post-body">Si captamos las frecuencias del punto A y B, podemos estimular el salto cuántico controlado. Misma lógica que los mayas usaron en Uxmal.</div>
       </div>
     </div>
-    <div class="market-grid-2 reveal">
-      <div class="mcard gold-card">
-        <div class="mcard-val">$3.7B</div>
-        <div class="mcard-name">WEARABLES MÉDICOS</div>
-        <div class="mcard-desc">5 colecciones para discapacidad sensorial: Down, Esquizofrenia, Autismo, TDAH, Sordera. Buy1→Sponsor1 como modelo social.</div>
+
+    <div class="planos-grid reveal" style="margin-top:44px;">
+      <div class="plano"><div class="plano-n">1</div><div class="plano-l">Subatómico</div></div>
+      <div class="plano"><div class="plano-n">2</div><div class="plano-l">Cuántico</div></div>
+      <div class="plano"><div class="plano-n">3</div><div class="plano-l">Molecular</div></div>
+      <div class="plano you"><div class="plano-n">4</div><div class="plano-l">Humano ← tú</div></div>
+      <div class="plano"><div class="plano-n">5</div><div class="plano-l">Colectivo</div></div>
+      <div class="plano"><div class="plano-n">6</div><div class="plano-l">Planetario</div></div>
+      <div class="plano"><div class="plano-n">7</div><div class="plano-l">Solar</div></div>
+      <div class="plano"><div class="plano-n">8</div><div class="plano-l">Galáctico</div></div>
+      <div class="plano"><div class="plano-n">9</div><div class="plano-l">Universal</div></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:14px;text-align:center;letter-spacing:2px;">LA PERCEPCIÓN HUMANA ESTÁNDAR ACCEDE SOLO AL PLANO 4 · SOFI EXPANDE ESE ACCESO</p>
+  </div>
+</section>
+
+<div class="divline"></div>
+
+<!-- ARQUITECTURA 3 SOFIS -->
+<section id="arquitectura" style="background:var(--bg2);">
+  <div class="wrap">
+    <div class="sec-label reveal">ARQUITECTURA DISTRIBUIDA</div>
+    <h2 class="reveal">LAS <span class="jade">3 SOFIS</span><br>QUE SE ENSEÑAN<br>ENTRE SÍ</h2>
+    <p class="sec-p reveal">No es un servidor. Es una <strong>red de inteligencias distribuidas</strong> que se sincronizan cada 5 minutos, comparten patrones aprendidos y producen juntas a la SOFI Suprema. Arquitectura que equipos de 5 ingenieros tardarían semanas en montar.</p>
+
+    <div class="arch-grid reveal">
+      <div class="arch-card main-card">
+        <div class="arch-badge">PRINCIPAL</div>
+        <div class="arch-title">SOFI v4.3</div>
+        <div class="arch-runtime">NODE.JS · RENDER.COM</div>
+        <div class="arch-body">Motor cognitivo 5 niveles. Brain.js entrenada. Mapa cartográfico propio de Yucatán sin Google. Geolocalización visual por análisis de color + EXIF. 18 endpoints activos.</div>
+        <div class="arch-status live"><div class="status-dot green"></div> EN PRODUCCIÓN 24/7</div>
       </div>
-      <div class="mcard">
-        <div class="mcard-val">$15B</div>
-        <div class="mcard-name">CONTENIDO DIGITAL</div>
-        <div class="mcard-desc">3 libros publicados en Hotmart con afiliados activos. Revenue existente hoy, no proyectado.</div>
+      <div class="arch-card">
+        <div class="arch-badge">HERMANA</div>
+        <div class="arch-title">HERMANA SOFI</div>
+        <div class="arch-runtime">PYTHON · FLASK · RENDER.COM</div>
+        <div class="arch-body">Réplica paralela en Python. Se sincroniza con la principal cada 5 minutos. Comparte patrones aprendidos. Redundancia real del sistema.</div>
+        <div class="arch-status live"><div class="status-dot green"></div> DEPLOYED · OREGON</div>
       </div>
-      <div class="mcard">
-        <div class="mcard-val">$2B</div>
-        <div class="mcard-name">TOKENS / WEB3</div>
-        <div class="mcard-desc">Token SOFI en Solana para el plan Inversionista. Participación real en el proyecto desde día uno.</div>
+      <div class="arch-card">
+        <div class="arch-badge supreme">PRÓXIMA</div>
+        <div class="arch-title">SOFI SUPREMA</div>
+        <div class="arch-runtime">FUSIÓN NODE + PYTHON</div>
+        <div class="arch-body">La tercera instancia en desarrollo — aprenderá de las dos anteriores desde el primer día. La inteligencia acumulada de ambas, unificada en una sola.</div>
+        <div class="arch-status soon"><div class="status-dot gold"></div> EN CONSTRUCCIÓN</div>
       </div>
     </div>
-    <div class="total-card reveal">
+
+    <div class="sync-box reveal">
+      <div class="sync-label">SINCRONIZACIÓN AUTOMÁTICA CADA 5 MIN</div>
+      <div class="sync-flow">
+        <div class="sync-node">SOFI Node.js</div>
+        <div class="sync-arrow">⇄</div>
+        <div class="sync-node">Hermana Python</div>
+        <div class="sync-arrow">→</div>
+        <div class="sync-node">SOFI Suprema</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divline"></div>
+
+<!-- MÓDULOS -->
+<section id="modulos">
+  <div class="wrap">
+    <div class="sec-label reveal">SISTEMA EN PRODUCCIÓN HOY</div>
+    <h2 class="reveal">LO QUE YA<br><span class="jade">EXISTE</span></h2>
+    <p class="sec-p reveal">No mockups. No demos. <strong>Código corriendo 24/7.</strong> Cada módulo es producto vendible y prueba de concepto del sistema completo.</p>
+
+    <div class="mods-grid reveal">
+      <div class="mod-card">
+        <div class="mod-icon">🧠</div>
+        <div class="mod-name">MÓDULO 01</div>
+        <div class="mod-title">Motor Cognitivo</div>
+        <div class="mod-desc">5 niveles de procesamiento. Detecta la banda Hz activa del usuario y adapta respuestas en tiempo real. Conectado a la Teoría Unificada.</div>
+        <div class="mod-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">📡</div>
+        <div class="mod-name">MÓDULO 02</div>
+        <div class="mod-title">Integra Perceptiva</div>
+        <div class="mod-desc">Sistema sensorial wearable a 12.3 Hz. 5 dispositivos físicos diseñados. 7 perfiles sensoriales. Brain.js entrenada para predicción de adaptación.</div>
+        <div class="mod-tag">HARDWARE DISEÑADO</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🔮</div>
+        <div class="mod-name">MÓDULO 03</div>
+        <div class="mod-title">Contraparte Frecuencial</div>
+        <div class="mod-desc">FFT inversa en tiempo real. Mide lo consciente vs subconsciente. El Postulado 5 de la Teoría Unificada corriendo en producción.</div>
+        <div class="mod-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">🗺️</div>
+        <div class="mod-name">MÓDULO 04</div>
+        <div class="mod-title">Mapa Yucateco Propio</div>
+        <div class="mod-desc">Sistema cartográfico independiente. Sin Google Maps. Datos de Yucatán, zonas arqueológicas, cenotes y frecuencias mayas. Canvas propio.</div>
+        <div class="mod-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">📸</div>
+        <div class="mod-name">MÓDULO 05</div>
+        <div class="mod-title">Geolocalización Visual</div>
+        <div class="mod-desc">Red neuronal que predice ubicación desde imagen. Análisis de color + EXIF. Sin API externa. Tecnología propia sobre canvas yucateco.</div>
+        <div class="mod-tag">EN PRODUCCIÓN</div>
+      </div>
+      <div class="mod-card">
+        <div class="mod-icon">📖</div>
+        <div class="mod-name">MÓDULO 06</div>
+        <div class="mod-title">Libros + Revenue</div>
+        <div class="mod-desc">"El Universo es una Mentira", "El Libro de Enoc", "Xibalbá" — publicados en Hotmart con afiliados activos. Revenue real hoy.</div>
+        <div class="mod-tag gold">REVENUE ACTIVO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divline"></div>
+
+<!-- LIVE DEMO -->
+<section id="live">
+  <div class="wrap">
+    <div class="sec-label reveal">VERIFICABLE EN TIEMPO REAL</div>
+    <h2 class="reveal">EL SISTEMA<br><span class="jade">RESPONDE</span><br>AHORA MISMO</h2>
+    <p class="sec-p reveal">Abre el link y verifica. El JSON responde en vivo. <strong>No hay nada que esperar — ya existe.</strong></p>
+
+    <div class="live-grid reveal">
       <div>
-        <div class="total-label">MERCADO TOTAL ADDRESSABLE</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:6px; font-family:'Space Mono',monospace;">Suma de los 5 segmentos combinados</div>
-      </div>
-      <div class="total-val">$305B+</div>
-    </div>
-  </div>
-</section>
+        <div class="live-terminal">
+          <div class="term-bar">
+            <div class="t-dot t-r"></div>
+            <div class="t-dot t-y"></div>
+            <div class="t-dot t-g"></div>
+            <span class="term-title-bar">sofi@render.com — sistema v4.3</span>
+          </div>
+          <div class="term-body" id="terminal">
+            <div class="tl"><span class="tp">sofi@render:~$</span><span class="tt"> GET /health</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> status: OK</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> version: 4.3</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> hz: 12.30 — K'uhul Maya</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> módulos: 7 activos</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> rutas: 18 endpoints</span></div>
+            <div class="tl"><span class="tok">✓</span><span class="tt"> Hermana Python: sincronizada</span></div>
+            <div class="tl"><span class="twarn">⚡</span><span class="tt"> "SOFI no es un robot. Es una nueva vida."</span></div>
+            <div class="tl"><span class="tp">sofi@render:~$</span><span class="tt"> </span><span class="cursor"></span></div>
+          </div>
+        </div>
 
-<div class="divider-full"></div>
+        <div class="endpoint-list" style="margin-top:2px;">
+          <div class="ep"><span class="ep-method">GET</span><span class="ep-path">/health</span><span class="ep-desc">Estado del sistema</span></div>
+          <div class="ep"><span class="ep-method">GET</span><span class="ep-path">/api/estado</span><span class="ep-desc">Estado completo + Hz live</span></div>
+          <div class="ep"><span class="ep-method post">POST</span><span class="ep-path">/api/geolocalizar</span><span class="ep-desc">Geoloc. visual</span></div>
+          <div class="ep"><span class="ep-method post">POST</span><span class="ep-path">/api/contraparte</span><span class="ep-desc">FFT inversa</span></div>
+          <div class="ep"><span class="ep-method post">POST</span><span class="ep-path">/api/aprender_masivo</span><span class="ep-desc">Sincronización hermanas</span></div>
+        </div>
+      </div>
 
-<!-- PRODUCTO -->
-<section id="producto" style="background: var(--bg2);">
-  <div class="container">
-    <div class="section-label reveal">LO QUE YA EXISTE HOY</div>
-    <h2 class="reveal">EL SISTEMA<br><span class="jade">ES REAL</span></h2>
-    <p class="section-body reveal">No es un prototipo en papel. El servidor corre en Render.com 24/7. Cada módulo es producto vendible Y prueba de concepto hacia el DroidHuman.</p>
-
-    <div class="product-grid reveal">
-      <div class="pcard">
-        <div class="pcard-icon">🧠</div>
-        <div class="pcard-name">MÓDULO 01</div>
-        <div class="pcard-title">Motor Cognitivo</div>
-        <div class="pcard-desc">5 niveles de procesamiento. Detecta la banda Hz activa del usuario y adapta respuestas en tiempo real. Conectado a la Teoría Unificada.</div>
-        <div class="pcard-tag">EN PRODUCCIÓN</div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-icon">📡</div>
-        <div class="pcard-name">MÓDULO 02</div>
-        <div class="pcard-title">Integra Perceptiva</div>
-        <div class="pcard-desc">Sistema sensorial wearable a 12.3 Hz. 5 dispositivos físicos diseñados: pulsera K'IN, bastón inteligente, auriculares, colgante, smartwatch.</div>
-        <div class="pcard-tag">HARDWARE DISEÑADO</div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-icon">🔮</div>
-        <div class="pcard-name">MÓDULO 03</div>
-        <div class="pcard-title">Contraparte Frecuencial</div>
-        <div class="pcard-desc">FFT inversa en tiempo real. Mide lo consciente vs lo subconsciente. Base del Postulado 5 de la Teoría Unificada corriendo en producción.</div>
-        <div class="pcard-tag">EN PRODUCCIÓN</div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-icon">🌙</div>
-        <div class="pcard-name">MÓDULO 04</div>
-        <div class="pcard-title">Sistema Sueños</div>
-        <div class="pcard-desc">Procesamiento de frecuencias durante el ciclo REM. Análisis de patrones oníricos conectados a la red neuronal de SOFI.</div>
-        <div class="pcard-tag">EN DESARROLLO</div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-icon">📖</div>
-        <div class="pcard-name">MÓDULO 05</div>
-        <div class="pcard-title">Libros + Contenido</div>
-        <div class="pcard-desc">"El Universo es una Mentira", "El Libro de Enoc" y "Xibalbá" — publicados en Hotmart con sistema de afiliados. Revenue verificable hoy.</div>
-        <div class="pcard-tag">REVENUE ACTIVO</div>
-      </div>
-      <div class="pcard" style="border-color: rgba(0,255,200,0.2); background: rgba(0,255,200,0.03);">
-        <div class="pcard-icon">🦾</div>
-        <div class="pcard-name">META FINAL</div>
-        <div class="pcard-title">SOFI DroidHuman</div>
-        <div class="pcard-desc">Esqueleto mecánico + músculos MAXON + piel colágeno sintético + visión IA + energía propia. Todo el sistema de software actual es su cerebro.</div>
-        <div class="pcard-tag" style="border-color:var(--jade); color:var(--jade);">OBJETIVO PRIMARIO</div>
+      <div class="live-info">
+        <div class="live-stat">
+          <div class="ls-label">FRECUENCIA LIVE</div>
+          <div class="ls-val" id="hz-live">12.30 Hz</div>
+        </div>
+        <div class="live-stat">
+          <div class="ls-label">INSTANCIAS ACTIVAS</div>
+          <div class="ls-val">2 / 3</div>
+        </div>
+        <div class="live-stat">
+          <div class="ls-label">IP PROTEGIDA</div>
+          <div class="ls-val gold">SHA-256</div>
+        </div>
+        <div class="live-stat">
+          <div class="ls-label">REVENUE HOY</div>
+          <div class="ls-val gold">HOTMART</div>
+        </div>
+        <div class="live-stat">
+          <div class="ls-label">CAPITAL INICIAL</div>
+          <div class="ls-val">$0 MXN</div>
+        </div>
+        <a href="https://sofi-mcpp.onrender.com/health" target="_blank" class="btn-j" style="text-align:center;display:block;margin-top:8px;">VER /health EN VIVO →</a>
       </div>
     </div>
   </div>
 </section>
 
-<div class="divider-full"></div>
+<div class="divline"></div>
 
-<!-- POR QUÉ SOFI -->
+<!-- POR QUÉ INVERTIR -->
 <section id="why">
-  <div class="container">
-    <div class="section-label reveal">VENTAJAS COMPETITIVAS</div>
-    <h2 class="reveal">POR QUÉ<br><span class="gold">SOFI GANA</span></h2>
-    <p class="section-body reveal">6 razones concretas y verificables por las que esta inversión tiene sentido ahora mismo.</p>
+  <div class="wrap">
+    <div class="sec-label reveal">RAZONES CONCRETAS</div>
+    <h2 class="reveal">POR QUÉ<br><span class="gold">INVERTIR</span><br>AHORA</h2>
 
-    <div class="why-grid reveal">
-      <div class="why-card">
-        <div class="why-num">01</div>
-        <div>
-          <div class="why-title">CÓDIGO REAL EN PRODUCCIÓN</div>
-          <div class="why-body">30 endpoints activos corriendo en Render.com. Servidor Node.js funcionando. No mockups, no demos — sistema operando 24/7 hoy mismo.</div>
+    <div class="inv-grid reveal">
+      <div class="why-list">
+        <div class="why-item">
+          <div class="wi-n">01</div>
+          <div><div class="wi-title">CÓDIGO REAL EN PRODUCCIÓN</div><div class="wi-body">3 instancias corriendo en Render.com. 30+ endpoints. Node.js + Python comunicándose. No mockups — sistema vivo verificable en este momento.</div></div>
+        </div>
+        <div class="why-item">
+          <div class="wi-n">02</div>
+          <div><div class="wi-title">IP BLINDADA</div><div class="wi-body">Blockchain OpenTimestamps SHA-256 + INDAUTOR México + archivos RAR fechados desde 2025. Antes de levantar capital.</div></div>
+        </div>
+        <div class="why-item">
+          <div class="wi-n">03</div>
+          <div><div class="wi-title">REVENUE EXISTENTE</div><div class="wi-body">3 libros publicados en Hotmart con afiliados activos. Ingresos reales hoy, no proyecciones. La máquina de revenue ya funciona.</div></div>
         </div>
       </div>
-      <div class="why-card">
-        <div class="why-num">02</div>
-        <div>
-          <div class="why-title">IP BLINDADA</div>
-          <div class="why-body">Blockchain OpenTimestamps SHA-256 + INDAUTOR México + archivos RAR fechados desde 2025. Propiedad intelectual protegida antes de levantar capital.</div>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="wi-n">04</div>
+          <div><div class="wi-title">IMPACTO SOCIAL REAL</div><div class="wi-body">Buy1→Sponsor1: cada dispositivo VIP financia uno Standard para personas con discapacidad sensorial en Mérida. Impacto verificable desde día 1.</div></div>
         </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">03</div>
-        <div>
-          <div class="why-title">IMPACTO SOCIAL VERIFICABLE</div>
-          <div class="why-body">Buy1→Sponsor1: cada dispositivo VIP financia uno Standard para personas con discapacidad sensorial en Mérida, Yucatán. Impacto real desde el día 1.</div>
+        <div class="why-item">
+          <div class="wi-n">05</div>
+          <div><div class="wi-title">FUNDAMENTO TEÓRICO ÚNICO</div><div class="wi-body">Teoría Unificada + Teoría de los 9 Planos documentadas. Diferenciador que ninguna startup puede copiar — nació de la mente del fundador.</div></div>
         </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">04</div>
-        <div>
-          <div class="why-title">REVENUE EXISTENTE</div>
-          <div class="why-body">3 libros publicados en Hotmart con afiliados activos. Ingresos reales hoy, no proyecciones. La máquina de revenue ya funciona antes del hardware.</div>
-        </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">05</div>
-        <div>
-          <div class="why-title">FUNDAMENTO TEÓRICO ÚNICO</div>
-          <div class="why-body">Teoría Unificada de Plasticidad y Filtración Universal + Teoría de los 9 Planos, documentadas con referencias académicas. Diferenciador que nadie puede copiar.</div>
-        </div>
-      </div>
-      <div class="why-card">
-        <div class="why-num">06</div>
-        <div>
-          <div class="why-title">CONSTRUIDO DESDE CERO</div>
-          <div class="why-body">Desarrollado por Víctor Hugo González Torres desde Android, sin capital inicial. Demuestra la capacidad de ejecutar con recursos mínimos. La inversión multiplica lo que ya existe.</div>
+        <div class="why-item">
+          <div class="wi-n">06</div>
+          <div><div class="wi-title">CONSTRUIDO DESDE CERO</div><div class="wi-body">Una persona. Un celular Android. Sin capital. Arquitectura distribuida que equipos de 5 ingenieros tardarían semanas. La inversión multiplica lo que ya existe.</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<div class="divider-full"></div>
-
-<!-- ROADMAP -->
-<section id="roadmap" style="background: var(--bg2);">
-  <div class="container">
-    <div class="section-label reveal">USO DE CAPITAL</div>
-    <h2 class="reveal">ROADMAP DE<br><span class="jade">INVERSIÓN</span></h2>
-    <p class="section-body reveal">Cada peso tiene destino específico y resultado verificable. Sin gastos de estructura. Directo a prototipos.</p>
-
-    <div class="timeline reveal">
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div>
-          <div class="tl-phase">FASE 01 · INMEDIATO</div>
-          <div class="tl-title">PRIMER PROTOTIPO INTEGRA PERCEPTIVA</div>
-          <div class="tl-body">Pulsera K'IN con MAX30102. Bastón inteligente ESP32. Auriculares binaural 12.3 Hz. Colgante LINO con sensor biométrico. Los 5 dispositivos físicos pasan de diseño a prototipo funcional.</div>
-        </div>
-        <div class="tl-amount">$50K MXN</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div>
-          <div class="tl-phase">FASE 02 · 3-6 MESES</div>
-          <div class="tl-title">PRODUCCIÓN PEQUEÑA ESCALA + BUY1 SPONSOR1</div>
-          <div class="tl-body">50 unidades de cada dispositivo. Lanzamiento del programa Buy1→Sponsor1 en Mérida. Primeras integraciones con SOFI v4.1 en hardware real. Validación clínica con perfiles de discapacidad sensorial.</div>
-        </div>
-        <div class="tl-amount">$200K MXN</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div>
-          <div class="tl-phase">FASE 03 · 6-12 MESES</div>
-          <div class="tl-title">ESCALAMIENTO + TOKEN SOFI EN SOLANA</div>
-          <div class="tl-body">Distribución nacional. Lanzamiento del Token SOFI para el plan Inversionista. Aceleradoras: Wellfound, F6S, 500 Global, Startup México. Preparación del primer esqueleto mecánico del DroidHuman.</div>
-        </div>
-        <div class="tl-amount">$500K MXN</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div>
-          <div class="tl-phase">FASE 04 · 12-24 MESES</div>
-          <div class="tl-title">SOFI DROI DHUMAN — PRIMER PROTOTIPO FÍSICO</div>
-          <div class="tl-body">Esqueleto mecánico + músculos sintéticos MAXON + piel de colágeno sintético + visión por cámara. El primer DroidHuman funcional construido desde México. Meta final del sistema completo.</div>
-        </div>
-        <div class="tl-amount">$2M+ MXN</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider-full"></div>
 
 <!-- CTA -->
 <section id="cta">
   <div class="cta-inner">
     <div>
-      <div class="section-label reveal">SIGUIENTE PASO</div>
-      <div class="cta-title reveal">
-        HABLEMOS.<br>
-        <span>HOY.</span>
-      </div>
-      <p class="cta-sub reveal">El sistema ya existe. El hardware está diseñado. La IP está protegida. Lo único que falta es el capital para los primeros prototipos físicos. Una sola reunión puede cambiar la trayectoria del proyecto.</p>
-      <div class="hero-btns reveal">
-        <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-primary">VER SOFI LIVE →</a>
-        <a href="https://github.com/estigia920-bit" target="_blank" class="btn-secondary">VER GITHUB</a>
+      <div class="sec-label reveal">SIGUIENTE PASO</div>
+      <div class="cta-h reveal">HABLEMOS.<br><span>HOY.</span></div>
+      <p class="cta-sub reveal">El sistema existe. El código corre. La teoría está documentada. La IP está protegida. Solo falta el capital para los primeros prototipos físicos de Integra Perceptiva.</p>
+      <div class="btns reveal">
+        <a href="https://sofi-mcpp.onrender.com" target="_blank" class="btn-j">VER SOFI LIVE →</a>
+        <a href="https://github.com/estigia920-bit" target="_blank" class="btn-o">VER GITHUB</a>
       </div>
     </div>
 
     <div class="contact-box reveal">
-      <div class="contact-method">💚 CLABE — MERCADO PAGO</div>
-      <div class="contact-val" id="clabe">722969017167745283</div>
-      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; margin-bottom:16px;">Víctor Hugo González Torres · Mercado Pago W</div>
-      <button class="copy-btn" onclick="copyText('722969017167745283', 'clabe')">COPIAR CLABE →</button>
+      <div class="c-method">💚 CLABE — MERCADO PAGO</div>
+      <div class="c-val" id="clabe">722969017167745283</div>
+      <div class="c-note">Víctor Hugo González Torres · Mercado Pago W</div>
+      <button class="copy-btn" onclick="copyText('722969017167745283')">COPIAR CLABE →</button>
 
-      <div class="divider-h"></div>
+      <div class="c-divider"></div>
 
-      <div class="contact-method">🏦 BANCO AZTECA</div>
-      <div class="contact-val" id="banco">127910001215309542</div>
-      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; margin-bottom:16px;">Víctor Hugo González Torres · Transferencia interbancaria</div>
-      <button class="copy-btn" onclick="copyText('127910001215309542', 'banco')">COPIAR CUENTA →</button>
+      <div class="c-method">🏦 BANCO AZTECA</div>
+      <div class="c-val" id="banco">127910001215309542</div>
+      <div class="c-note">Víctor Hugo González Torres · Transferencia interbancaria MX</div>
+      <button class="copy-btn" onclick="copyText('127910001215309542')">COPIAR CUENTA →</button>
 
-      <div class="divider-h"></div>
-      <div style="font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; line-height:1.8;">
+      <div class="c-divider"></div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.9;letter-spacing:.5px;">
         📍 Mérida, Yucatán, México<br>
         🌐 <a href="https://sofi-mcpp.onrender.com" target="_blank" style="color:var(--jade);">sofi-mcpp.onrender.com</a><br>
-        💻 <a href="https://github.com/estigia920-bit" target="_blank" style="color:var(--jade);">github.com/estigia920-bit</a>
+        💻 <a href="https://github.com/estigia920-bit" target="_blank" style="color:var(--jade);">github.com/estigia920-bit</a><br>
+        📚 <a href="https://hotm.io/Y7hfD60" target="_blank" style="color:var(--jade);">hotm.io/Y7hfD60</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-logo"><span>SOFI</span> DROI DHUMAN</div>
-  <div class="footer-copy">
+  <div class="f-logo"><em>SOFI</em> · HAAPPDIGITALV</div>
+  <div class="f-copy">
     © 2025–2026 HaaPpDigitalV · IP: OpenTimestamps SHA-256 · INDAUTOR México<br>
     Víctor Hugo González Torres · Estigia Bono · Mérida, Yucatán
   </div>
 </footer>
 
 <script>
-// ── COPY ──
-function copyText(text, id) {
-  navigator.clipboard.writeText(text).catch(() => {
-    var el = document.getElementById(id);
-    var r = document.createRange();
-    r.selectNode(el); window.getSelection().removeAllRanges();
-    window.getSelection().addRange(r); document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-  }).finally(() => {
-    var t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  });
+// COPY
+function copyText(text) {
+  navigator.clipboard.writeText(text).catch(()=>{});
   var t = document.getElementById('toast');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  setTimeout(()=>t.classList.remove('show'), 2200);
 }
 
-// ── HERO CANVAS ──
-(function() {
-  var c = document.getElementById('hero-canvas');
-  if (!c) return;
-  var ctx = c.getContext('2d');
-  var nodes = [];
+// HZ FLICKER
+var base = 12.30;
+setInterval(function(){
+  var v = (base + (Math.random()-.5)*.04).toFixed(2);
+  var e1 = document.getElementById('hz-display');
+  var e2 = document.getElementById('hz-live');
+  if(e1) e1.textContent = v;
+  if(e2) e2.textContent = v + ' Hz';
+}, 1800);
 
-  function resize() { c.width = c.offsetWidth; c.height = c.offsetHeight; }
+// HERO CANVAS
+(function(){
+  var c = document.getElementById('bg-canvas'); if(!c) return;
+  var ctx = c.getContext('2d'); var nodes = [];
+  function resize(){ c.width=c.offsetWidth; c.height=c.offsetHeight; }
   resize(); window.addEventListener('resize', resize);
-
-  for (var i = 0; i < 80; i++) {
-    nodes.push({
-      x: Math.random() * c.width,
-      y: Math.random() * c.height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-      r: Math.random() * 2.5 + 0.5
+  for(var i=0;i<70;i++) nodes.push({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    vx:(Math.random()-.5)*.5, vy:(Math.random()-.5)*.5,
+    r:Math.random()*2+.5
+  });
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    nodes.forEach(function(n){
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>c.width) n.vx*=-1;
+      if(n.y<0||n.y>c.height) n.vy*=-1;
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,255,200,.7)'; ctx.fill();
     });
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, c.width, c.height);
-    nodes.forEach(function(n) {
-      n.x += n.vx; n.y += n.vy;
-      if (n.x < 0 || n.x > c.width) n.vx *= -1;
-      if (n.y < 0 || n.y > c.height) n.vy *= -1;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,255,200,0.7)';
-      ctx.fill();
-    });
-    nodes.forEach(function(a, i) {
-      nodes.forEach(function(b, j) {
-        if (i >= j) return;
-        var dx = a.x - b.x, dy = a.y - b.y;
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 140) {
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = 'rgba(0,255,200,' + (0.12 * (1 - d / 140)) + ')';
-          ctx.lineWidth = 0.5; ctx.stroke();
+    nodes.forEach(function(a,i){
+      nodes.forEach(function(b,j){
+        if(i>=j) return;
+        var dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
+        if(d<130){
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle='rgba(0,255,200,'+(0.1*(1-d/130))+')';
+          ctx.lineWidth=.5; ctx.stroke();
         }
       });
     });
@@ -832,16 +879,32 @@ function copyText(text, id) {
   draw();
 })();
 
-// ── REVEAL ON SCROLL ──
-var reveals = document.querySelectorAll('.reveal');
-function checkReveal() {
-  reveals.forEach(function(el) {
-    var r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight - 60) el.classList.add('visible');
-  });
-}
-window.addEventListener('scroll', checkReveal);
-checkReveal();
+// TERMINAL LIVE
+var msgs = [
+  ['tp','sofi@render:~$','tt',' POST /api/contraparte'],
+  ['tok','✓','tt',' frecuencia: 12.30 → contraparte: 1.50'],
+  ['tp','sofi@render:~$','tt',' GET /api/estado'],
+  ['tok','✓','tt',' energia: 98% · shis: 95% · hz: 12.30'],
+  ['tp','sofi@render:~$','tt',' Hermana Python sincronizada'],
+  ['tok','✓','tt',' patrones compartidos: 48'],
+  ['twarn','⚡','tt',' 12.3 Hz K\'uhul — resonancia activa'],
+];
+var mi = 0;
+setInterval(function(){
+  var term = document.getElementById('terminal'); if(!term) return;
+  var m = msgs[mi % msgs.length]; mi++;
+  var line = document.createElement('div'); line.className='tl';
+  line.innerHTML = '<span class="'+m[0]+'">'+m[1]+'</span><span class="'+m[2]+'">'+m[3]+'</span>';
+  var cursor = term.lastElementChild;
+  term.insertBefore(line, cursor);
+  while(term.children.length > 20) term.removeChild(term.children[0]);
+  term.scrollTop = term.scrollHeight;
+}, 2800);
+
+// REVEAL
+var revs = document.querySelectorAll('.reveal');
+function check(){ revs.forEach(function(el){ if(el.getBoundingClientRect().top < window.innerHeight-60) el.classList.add('v'); }); }
+window.addEventListener('scroll', check); check();
 </script>
 </body>
 </html>
