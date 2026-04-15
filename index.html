@@ -181,56 +181,42 @@
   .btn-skip:hover { border-color: var(--jade); color: var(--jade); }
 
   /* ════════════════════════════════════════
-     FLOATING SOFI (mini hologram)
-  ════════════════════════════════════════ */
-  #sofi-float {
-    position: fixed; bottom: 28px; right: 24px; z-index: 800;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
-    opacity: 0; transition: opacity .6s; pointer-events: none;
-  }
-  #sofi-float.vis { opacity: 1; pointer-events: all; }
+  
+ <!-- ==============================================
+     NUEVO HOLOGRAMA SOFI - VERSION FINAL 
+     ============================================== -->
+<div id="sofi-float" style="position:relative; text-align:center;">
+    
+    <!-- BURBUJA DE TEXTO -->
+    <div id="textoHablador" style="position:absolute; top:-120px; left:50%; transform:translateX(-50%); background:rgba(0,10,30,0.85); border:1px solid #00ffff; color:#fff; padding:15px 20px; border-radius:12px; max-width:420px; font-size:14px; box-shadow:0 0 25px rgba(0,255,255,0.4); opacity:0; transition:opacity 0.5s; z-index:999;"></div>
 
-  .float-bubble {
-    background: rgba(3,7,13,.96); border: 1px solid rgba(0,255,200,.3);
-    padding: 12px 16px; max-width: 270px; font-size: 11px; line-height: 1.7;
-    color: var(--text); backdrop-filter: blur(20px);
-    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-    display: none; opacity: 0; transform: translateY(8px); transition: all .4s;
-  }
-  .float-bubble.show { display: block; opacity: 1; transform: translateY(0); }
-  .float-bubble-lbl { font-size: 8px; letter-spacing: 3px; color: var(--jade); margin-bottom: 6px; }
+    <!-- IMAGEN NUEVA CON EFECTOS -->
+    <img id="holoSofiFinal" 
+         src="AQUI_PONES_TU_LINK" 
+         alt="SOFI"
+         style="width:480px; height:auto; 
+                filter: drop-shadow(0 0 20px #00ffff) drop-shadow(0 0 45px #00ffff) brightness(1.4) contrast(1.2) saturate(0.7);
+                mix-blend-mode: screen;
+                animation: hologramFlicker 2.5s infinite alternate, flotarSuave 7s ease-in-out infinite;
+                transform-origin: bottom center;
+                transition: transform 0.2s ease-out;">
 
-  /* mini hologram flotante */
-  .float-holo-wrap {
-    position: relative; width: 72px; height: 120px;
-    cursor: pointer; animation: afloat 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 10px rgba(0,255,200,.5));
-  }
-  .float-holo-img {
-    width: 72px; height: 120px; object-fit: cover; object-position: center top;
-    clip-path: polygon(0 0, 100% 0, 100% 88%, 50% 100%, 0 88%);
-    filter: brightness(1.1) contrast(1.05) saturate(.7) hue-rotate(155deg)
-            drop-shadow(0 0 8px rgba(0,255,200,.9));
-    mix-blend-mode: screen;
-    animation: holo-flicker 3s ease-in-out infinite alternate;
-  }
-  .float-holo-scanlines {
-    position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(transparent 0, rgba(0,255,200,.05) 1px, transparent 2px);
-  }
-  .float-ring-sm {
-    position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
-    width: 46px; height: 46px; border-radius: 50%;
-    border: 1px solid rgba(0,255,200,.4); animation: hpulse 2s ease-in-out infinite;
-  }
-  .float-chat-btn {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--jade); border: none; cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .3s; box-shadow: 0 0 20px rgba(0,255,200,.4);
-    margin-right: 16px;
-  }
-  .float-chat-btn:hover { transform: scale(1.1); background: var(--gold); }
+</div>
+
+<!-- ESTILOS Y ANIMACIONES INCLUIDOS -->
+<style>
+@keyframes flotarSuave {
+    0% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-12px) scale(1.01); }
+    100% { transform: translateY(0px) scale(1); }
+}
+@keyframes hologramFlicker {
+    0% { opacity: 0.85; filter: drop-shadow(0 0 15px #00ffff) brightness(1.1); }
+    50% { opacity: 1; filter: drop-shadow(0 0 35px #00ffff) brightness(1.4); }
+    100% { opacity: 0.9; filter: drop-shadow(0 0 20px #00ffff) brightness(1.2); }
+}
+</style>
+
 
   /* ════════════════════════════════════════
      CHAT PANEL
